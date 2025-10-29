@@ -16,6 +16,8 @@ footer.footer
             RouterLink(to="/pricing") Pricing
           li
             RouterLink(to="/about") About Us
+          li
+            RouterLink(to="/terms") Terms & Conditions
       .footer-section
         h4 Contact
         ul
