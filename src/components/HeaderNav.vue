@@ -3,7 +3,7 @@ header.header(:class="{ transparent: isTransparent, scrolled: isScrolled }")
   .container
     .header-content
       .logo
-        RouterLink(to="/") LOGO
+        RouterLink(to="/") REBAX
       nav.nav
         RouterLink.nav-link(to="/" :class="{ active: $route.name === 'Home' }") Home
         RouterLink.nav-link(to="/product" :class="{ active: $route.name === 'Product' }") Product
