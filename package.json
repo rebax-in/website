@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
+    "build:verify": "npm run build && node -e \"console.log(require('fs').existsSync('./dist/.htaccess') ? '✅ .htaccess found' : '❌ .htaccess missing')\"",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
