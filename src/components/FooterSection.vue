@@ -23,7 +23,7 @@ footer.footer
         ul
           li Email: admin@rebax.in
           li Phone: +91 9090223242
-          li Address: Plot no 4-125-Flat no.101, Rayes Abode LANEno-5 B K Enclave,,Miyapur swamy temple rangareddy , Hyderabad, Telangana, IN, 500049
+          li Address: Plot no 4-125, Flat No. 101, Reyes Abode, Lane No-5 B K Enclave, Miyapur, Rangareddy, Hyderabad, Telangana, IN, 500049
       .footer-section
         h4 Follow Us
         .social-links
