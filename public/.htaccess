@@ -1,0 +1,234 @@
+# ==============================================================================
+# REBAX Website - Apache .htaccess Configuration
+# For Vue.js SPA with Vue Router History Mode
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Rewrite Engine & Options
+# ------------------------------------------------------------------------------
+RewriteEngine On
+Options -Indexes
+Options -MultiViews
+
+# ------------------------------------------------------------------------------
+# Security Headers
+# ------------------------------------------------------------------------------
+
+# Prevent access to sensitive files
+<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|swp)|~)$">
+    Require all denied
+</FilesMatch>
+
+# Block access to .htaccess itself
+<Files ".htaccess">
+    Require all denied
+</Files>
+
+# Security headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Enable XSS protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (adjust as needed)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;"
+    
+    # Remove server signature
+    Header always unset Server
+    Header always unset X-Powered-By
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# HTTPS Redirect - Force HTTPS for all requests
+# ------------------------------------------------------------------------------
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ------------------------------------------------------------------------------
+# Domain-specific redirects for rebax.in
+# ------------------------------------------------------------------------------
+
+# Redirect rebax.in to www.rebax.in (matches GitHub Pages CNAME configuration)
+RewriteCond %{HTTP_HOST} ^rebax\.in$ [NC]
+RewriteRule ^(.*)$ https://www.rebax.in/$1 [L,R=301]
+
+# Ensure www.rebax.in stays as www.rebax.in (no further redirect needed)
+RewriteCond %{HTTP_HOST} ^www\.rebax\.in$ [NC]
+RewriteRule ^(.*)$ - [L]
+
+# ------------------------------------------------------------------------------
+# Generic WWW Redirect (for other domains - kept commented as backup)
+# ------------------------------------------------------------------------------
+
+# Option 1: Redirect to www version (use domain-specific rules above instead)
+# RewriteCond %{HTTP_HOST} !^www\. [NC]
+# RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Option 2: Redirect to non-www version (not used for rebax.in)
+# RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+# RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [L,R=301]
+
+# ------------------------------------------------------------------------------
+# Caching Rules
+# ------------------------------------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    
+    # Fonts
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    
+    # HTML (short cache for SPA)
+    ExpiresByType text/html "access plus 1 hour"
+    
+    # Manifest and service worker
+    ExpiresByType application/manifest+json "access plus 1 week"
+    ExpiresByType text/cache-manifest "access plus 0 seconds"
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# Compression
+# ------------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript, Text, XML and fonts
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE application/x-font
+    AddOutputFilterByType DEFLATE application/x-font-opentype
+    AddOutputFilterByType DEFLATE application/x-font-otf
+    AddOutputFilterByType DEFLATE application/x-font-truetype
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE font/opentype
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE image/x-icon
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# Vue.js SPA - History Mode Support
+# ------------------------------------------------------------------------------
+
+# Handle Angular and Vue.js Router
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+
+# Alternative method for Vue Router (if above doesn't work)
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteBase /
+#     RewriteRule ^index\.html$ - [L]
+#     RewriteCond %{REQUEST_FILENAME} !-f
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteRule . /index.html [L]
+# </IfModule>
+
+# ------------------------------------------------------------------------------
+# File Type Optimization
+# ------------------------------------------------------------------------------
+
+# Set UTF-8 encoding for certain file types
+<IfModule mod_mime.c>
+    AddCharset utf-8 .atom .css .js .json .jsonld .rss .vtt .webapp .xml
+</IfModule>
+
+# Serve resources with proper MIME types
+<IfModule mod_mime.c>
+    # JavaScript
+    AddType application/javascript js
+    
+    # Manifest files
+    AddType application/manifest+json webmanifest
+    AddType application/x-web-app-manifest+json webapp
+    AddType text/cache-manifest appcache
+    
+    # Media files
+    AddType audio/mp4 m4a f4a f4b
+    AddType audio/ogg oga ogg
+    AddType video/mp4 mp4 m4v f4v f4p
+    AddType video/ogg ogv
+    AddType video/webm webm
+    AddType image/webp webp
+    
+    # Fonts
+    AddType font/woff woff
+    AddType font/woff2 woff2
+    AddType application/vnd.ms-fontobject eot
+    AddType font/ttf ttf
+    AddType font/otf otf
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# Error Pages (optional - create these pages if needed)
+# ------------------------------------------------------------------------------
+# ErrorDocument 404 /404.html
+# ErrorDocument 500 /500.html
+
+# ------------------------------------------------------------------------------
+# Performance Optimizations
+# ------------------------------------------------------------------------------
+
+# Remove ETags (can cause issues with load balancing)
+<IfModule mod_headers.c>
+    Header unset ETag
+</IfModule>
+FileETag None
+
+# Prevent access to version control directories
+<DirectoryMatch "\.git">
+    Require all denied
+</DirectoryMatch>
+
+# ------------------------------------------------------------------------------
+# Additional Security
+# ------------------------------------------------------------------------------
+
+# Prevent hotlinking (uncomment to enable protection for rebax.in)
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^https?://(www\.)?rebax\.in [NC]
+# RewriteRule \.(jpg|jpeg|png|gif|webp|svg)$ - [F]
+
+# Block common exploit attempts
+<IfModule mod_rewrite.c>
+    RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} ^.*(\[|\]|\(|\)|<|>|ê|"|;|\?|\*|=$).* [NC,OR]
+    RewriteCond %{QUERY_STRING} ^.*("|'|<|>|\|{||).* [NC,OR]
+    RewriteCond %{QUERY_STRING} ^.*(%0|%A|%B|%C|%D|%E|%F|127\.0).* [NC]
+    RewriteRule ^(.*)$ - [F,L]
+</IfModule>
