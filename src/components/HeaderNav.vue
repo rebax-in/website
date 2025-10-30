@@ -10,7 +10,8 @@ header.header(:class="{ transparent: isTransparent, scrolled: isScrolled }")
         RouterLink.nav-link(to="/pricing" :class="{ active: $route.name === 'Pricing' }") Pricing
         RouterLink.nav-link(to="/about" :class="{ active: $route.name === 'About' }") About Us
       .auth-buttons
-        button.btn.btn-secondary Login/Signup
+        RouterLink.btn.btn-outline(to="/signin") Sign In
+        RouterLink.btn.btn-primary(to="/register") Sign Up
       .mobile-menu-toggle(@click="toggleMobileMenu")
         span
         span
@@ -20,7 +21,9 @@ header.header(:class="{ transparent: isTransparent, scrolled: isScrolled }")
       RouterLink.mobile-nav-link(to="/product" @click="closeMobileMenu") Product
       RouterLink.mobile-nav-link(to="/pricing" @click="closeMobileMenu") Pricing
       RouterLink.mobile-nav-link(to="/about" @click="closeMobileMenu") About Us
-      button.btn.btn-secondary.mobile-auth Login/Signup
+      .mobile-auth-buttons
+        RouterLink.btn.btn-outline.mobile-auth(to="/signin" @click="closeMobileMenu") Sign In
+        RouterLink.btn.btn-primary.mobile-auth(to="/register" @click="closeMobileMenu") Sign Up
 </template>
 
 <script setup lang="ts">
@@ -31,8 +34,8 @@ const route = useRoute()
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
 
-// Check if we should show transparent header (only on homepage)
-const isTransparent = computed(() => route.name === 'Home')
+// Check if we should show transparent header (only on homepage and not scrolled)
+const isTransparent = computed(() => route.name === 'Home' && !isScrolled.value)
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
@@ -91,13 +94,27 @@ onUnmounted(() => {
         }
       }
 
-      .auth-buttons .btn-secondary {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+      .auth-buttons {
+        .btn.btn-outline {
+          background: transparent;
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            color: white;
+          }
+        }
+        
+        .btn.btn-primary {
+          background: rgba(255, 255, 255, 0.15);
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.3);
 
-        &:hover {
-          background: rgba(255, 255, 255, 0.25);
+          &:hover {
+            background: rgba(255, 255, 255, 0.25);
+          }
         }
       }
 
@@ -225,6 +242,44 @@ onUnmounted(() => {
     }
 
     .auth-buttons {
+      display: flex;
+      align-items: center;
+      gap: @spacing-sm;
+
+      .btn {
+        padding: @spacing-xs @spacing-md;
+        font-size: @font-size-sm;
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: @border-radius-md;
+        transition: all 0.3s ease;
+        
+        &.btn-outline {
+          background: transparent;
+          color: @text-primary;
+          border: 1px solid @border-color;
+          
+          &:hover {
+            background: @hover-bg;
+            border-color: @primary-color;
+            color: @primary-color;
+            transform: translateY(-1px);
+          }
+        }
+        
+        &.btn-primary {
+          background: @gradient-primary;
+          color: white;
+          border: none;
+          
+          &:hover {
+            background: @gradient-primary-hover;
+            transform: translateY(-1px);
+            box-shadow: @shadow-md;
+          }
+        }
+      }
+
       @media (max-width: @tablet) {
         display: none;
       }
@@ -279,9 +334,44 @@ onUnmounted(() => {
       }
     }
 
-    .mobile-auth {
-      margin: @spacing-sm @spacing-md 0;
-      width: calc(100% - @spacing-md * 2);
+    .mobile-auth-buttons {
+      padding: @spacing-sm @spacing-md 0;
+      display: flex;
+      flex-direction: column;
+      gap: @spacing-sm;
+      
+      .mobile-auth {
+        width: 100%;
+        text-align: center;
+        padding: @spacing-sm @spacing-md;
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: @border-radius-md;
+        transition: all 0.3s ease;
+        
+        &.btn-outline {
+          background: transparent;
+          color: @primary-color;
+          border: 1px solid @primary-color;
+          
+          &:hover {
+            background: @primary-color;
+            border-color: @primary-color;
+            color: white;
+          }
+        }
+        
+        &.btn-primary {
+          background: @gradient-primary;
+          color: white;
+          border: none;
+          
+          &:hover {
+            background: @gradient-primary-hover;
+            box-shadow: @shadow-md;
+          }
+        }
+      }
     }
 
     @media (max-width: @tablet) {

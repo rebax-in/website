@@ -63,7 +63,15 @@
 
       section.terms-section
         h2 7. Privacy and Data Protection
-        p Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy, which is incorporated into these Terms by reference. By using REBAX, you consent to our data practices as described in our Privacy Policy.
+        p Your privacy is important to us. Our collection and use of personal information is governed by our 
+          router-link.privacy-link(to="/privacy") Privacy Policy
+          | , which is incorporated into these Terms by reference. By using REBAX, you consent to our data practices as described in our 
+          router-link.privacy-link(to="/privacy") Privacy Policy
+          | .
+        p 
+          strong For complete details about how we collect, use, and protect your personal information, please review our 
+          router-link.privacy-link(to="/privacy") full Privacy Policy
+          | .
 
       section.terms-section
         h2 8. Intellectual Property Rights
@@ -162,6 +170,20 @@
         strong {
           color: @dark-bg;
           font-weight: 600;
+        }
+      }
+      
+      .privacy-link {
+        color: @primary-color;
+        text-decoration: none;
+        font-weight: 600;
+        border-bottom: 1px solid transparent;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          color: @action-color;
+          border-bottom-color: @action-color;
+          text-decoration: none;
         }
       }
       
