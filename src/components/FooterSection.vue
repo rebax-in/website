@@ -3,7 +3,7 @@ footer.footer
   .container
     .footer-content
       .footer-section
-        h3 REBAX
+        h3 REBAX SOLUTIONS
         p Your trusted real estate platform connecting agents, agencies, and builders.
       .footer-section
         h4 Quick Links
@@ -21,9 +21,9 @@ footer.footer
       .footer-section
         h4 Contact
         ul
-          li Email: info@rebax.com
-          li Phone: +1 (555) 123-4567
-          li Address: 123 Real Estate St, City, State 12345
+          li Email: admin@rebax.in
+          li Phone: +91 9090223242
+          li Address: Plot no 4-125-Flat no.101, Rayes Abode LANEno-5 B K Enclave,,Miyapur swamy temple rangareddy , Hyderabad, Telangana, IN, 500049
       .footer-section
         h4 Follow Us
         .social-links
@@ -32,7 +32,7 @@ footer.footer
           a(href="#" aria-label="LinkedIn") LI
           a(href="#" aria-label="Instagram") IG
     .footer-bottom
-      p &copy; 2025 REBAX. All rights reserved.
+      p &copy; 2025 REBAX SOLUTIONS. All rights reserved.
 </template>
 
 <script setup lang="ts">
